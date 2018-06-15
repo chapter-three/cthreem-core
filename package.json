@@ -2,7 +2,19 @@
   "name": "cthreem-core",
   "version": "1.0.0",
   "description": "Build tools for Drupal themes.",
+  "main": "index.js",
+  "author": {
+    "name": "Chapter Three",
+    "url": "https://www.chapterthree.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chapter-three/cthreem-core"
+  },
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chapter-three/cthreem-core/issues"
+  },
   "dependencies": {
     "del": "^3.0.0",
     "gulp": "^4",
