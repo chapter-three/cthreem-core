@@ -14,8 +14,6 @@ module.exports = {
     ],
     removeSourceComments: true,
     flattenDest: true,
-    lint: {
-      enabled: true,
-    }
+    lint: true,
   },
 };

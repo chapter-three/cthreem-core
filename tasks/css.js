@@ -72,7 +72,7 @@ module.exports = (gulp, config, tasks) => {
   function cssWatch() {
     const watchTasks = [cssCompile];
 
-    if (config.css.lint.enabled) {
+    if (config.css.lint) {
       watchTasks.push(cssValidate);
     }
 
