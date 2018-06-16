@@ -23,6 +23,10 @@ module.exports = (gulp, userConfig) => {
     require('./tasks/css')(gulp, config, tasks);
   }
 
+  if (config.js.enabled) {
+    require('./tasks/js')(gulp, config, tasks);
+  }
+
   /**
    * Gulp tasks.
    */
