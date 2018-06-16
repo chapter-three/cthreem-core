@@ -33,11 +33,11 @@ module.exports = (gulp, userConfig) => {
   gulp.task('watch', gulp.parallel(tasks.watch));
 
   gulp.task('default', gulp.series([
-    tasks.clean,
+    'clean',
     gulp.parallel([
-      tasks.validate,
-      tasks.compile
+      'validate',
+      'compile'
     ]),
-    tasks.watch
+    'watch'
   ]));
 };
