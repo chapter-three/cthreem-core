@@ -85,15 +85,15 @@ module.exports = (gulp, config, tasks) => {
    * Setup gulp tasks.
    */
 
-  gulp.task('css:compile', cssCompile);
-  tasks.compile.push('css:compile');
+  gulp.task('compile:css', cssCompile);
+  tasks.compile.push('compile:css');
 
-  gulp.task('css:clean', cssClean);
-  tasks.clean.push('css:clean');
+  gulp.task('clean:css', cssClean);
+  tasks.clean.push('clean:css');
 
-  if (config.css.lint.enabled) {
-    gulp.task('css:validate', cssValidate);
-    tasks.validate.push('css:validate');
+  if (config.css.lint) {
+    gulp.task('validate:css', cssValidate);
+    tasks.validate.push('validate:css');
   }
 
   gulp.task('watch:css', cssWatch);
