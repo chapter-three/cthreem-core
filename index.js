@@ -1,6 +1,6 @@
 'use strict'
 
-const _ = require('lodash');
+const _             = require('lodash');
 const defaultConfig = require('./gulp-config');
 
 module.exports = (gulp, userConfig) => {
@@ -35,10 +35,10 @@ module.exports = (gulp, userConfig) => {
    * Gulp tasks.
    */
 
-  gulp.task('clean', gulp.parallel(tasks.clean));
-  gulp.task('compile', gulp.series(tasks.compile));
-  gulp.task('validate', gulp.parallel(tasks.validate));
-  gulp.task('watch', gulp.parallel(tasks.watch));
+  gulp.task('clean', tasks.clean.length ? gulp.parallel(tasks.clean) : () => {});
+  gulp.task('compile', tasks.compile.length ? gulp.series(tasks.compile) : () => {});
+  gulp.task('validate', tasks.validate.length ? gulp.parallel(tasks.validate) : () => {});
+  gulp.task('watch', tasks.watch.length ? gulp.parallel(tasks.watch) : () => {});
 
   gulp.task('default', gulp.series([
     'clean',
