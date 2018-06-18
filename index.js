@@ -40,11 +40,11 @@ module.exports = (gulp, userConfig) => {
    * Gulp tasks.
    */
 
-  gulp.task('clean', tasks.clean.length ? gulp.parallel(tasks.clean) : () => {});
-  gulp.task('compile', tasks.compile.length ? gulp.series(tasks.compile) : () => {});
-  gulp.task('compress', tasks.compress.length ? gulp.parallel(tasks.compress) : () => {});
-  gulp.task('validate', tasks.validate.length ? gulp.parallel(tasks.validate) : () => {});
-  gulp.task('watch', tasks.watch.length ? gulp.parallel(tasks.watch) : () => {});
+  gulp.task('clean', tasks.clean.length ? gulp.parallel(tasks.clean) : (done) => { done() });
+  gulp.task('compile', tasks.compile.length ? gulp.series(tasks.compile) : (done) => { done() });
+  gulp.task('compress', tasks.compress.length ? gulp.parallel(tasks.compress) : (done) => { done() });
+  gulp.task('validate', tasks.validate.length ? gulp.parallel(tasks.validate) : (done) => { done() });
+  gulp.task('watch', tasks.watch.length ? gulp.parallel(tasks.watch) : (done) => { done() });
 
   gulp.task('default', gulp.series([
     'clean',
