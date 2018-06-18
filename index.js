@@ -27,6 +27,10 @@ module.exports = (gulp, userConfig) => {
     require('./tasks/js')(gulp, config, tasks);
   }
 
+  if (config.browserSync.enabled) {
+    require('./tasks/browser-sync')(gulp, config, tasks);
+  }
+
   /**
    * Gulp tasks.
    */

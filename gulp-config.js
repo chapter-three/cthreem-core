@@ -29,5 +29,15 @@ module.exports = {
     babel: true,
     uglify: false,
     lint: true
+  },
+  browserSync: {
+    enabled: true,
+    ui: false,
+    files: {
+      css: true,
+      js: true,
+      extra: []
+    },
+    startupBehavior: false
   }
 };

@@ -18,6 +18,7 @@
   "dependencies": {
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
+    "browser-sync": "^2.24.4",
     "del": "^3.0.0",
     "eslint": "^4.19.1",
     "gulp": "^4",
@@ -35,6 +36,7 @@
     "gulp-strip-comments": "^2.5.2",
     "gulp-stylelint": "^7.0.0",
     "gulp-uglify": "^3.0.0",
+    "lodash": "^4.17.10",
     "stylelint": "^9.2.1"
   },
   "devDependencies": {}
