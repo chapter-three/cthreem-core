@@ -1,3 +1,4 @@
+const _           = require('lodash');
 const browserSync = require('browser-sync').create();
 
 module.exports = (gulp, config, tasks) => {
@@ -14,10 +15,28 @@ module.exports = (gulp, config, tasks) => {
     });
   }
 
+  // See https://browsersync.io/docs/options
   const options = {
     ui: config.browserSync.ui,
     files: files,
-    open: config.browserSync.startupBehavior
+    notify: false,
+    open: config.browserSync.startupBehavior,
+    reloadOnRestart: true,
+    reloadDelay: 100,
+  }
+
+  if (config.browserSync.domain) {
+    _.merge(options, {
+      proxy: config.browserSync.domain
+    });
+  }
+  else {
+    _.merge(options, {
+      server: {
+        baseDir: config.browserSync.baseDir,
+      },
+      startPath: config.browserSync.startPath
+    });
   }
 
   function bsStart() {

@@ -32,12 +32,15 @@ module.exports = {
   },
   browserSync: {
     enabled: true,
-    ui: false,
     files: {
       css: true,
       js: true,
       extra: []
     },
-    startupBehavior: false
+    baseDir: './',
+    startPath: '',
+    domain: '',
+    startupBehavior: false,
+    ui: false,
   }
 };
