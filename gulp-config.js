@@ -30,6 +30,14 @@ module.exports = {
     uglify: false,
     lint: true
   },
+  images: {
+    enabled: true,
+    src: [
+      'images/**/*{.png,.gif,.jpg,.jpeg,.svg}'
+    ],
+    dest: './assets/images',
+    flattenDest: false
+  },
   browserSync: {
     enabled: true,
     files: {

@@ -9,6 +9,7 @@ module.exports = (gulp, userConfig) => {
   const tasks = {
     clean: [],
     compile: [],
+    compress: [],
     default: [],
     validate: [],
     watch: [],
@@ -27,6 +28,10 @@ module.exports = (gulp, userConfig) => {
     require('./tasks/js')(gulp, config, tasks);
   }
 
+  if (config.images.enabled) {
+    require('./tasks/images')(gulp, config, tasks);
+  }
+
   if (config.browserSync.enabled) {
     require('./tasks/browser-sync')(gulp, config, tasks);
   }
@@ -37,6 +42,7 @@ module.exports = (gulp, userConfig) => {
 
   gulp.task('clean', tasks.clean.length ? gulp.parallel(tasks.clean) : () => {});
   gulp.task('compile', tasks.compile.length ? gulp.series(tasks.compile) : () => {});
+  gulp.task('compress', tasks.compress.length ? gulp.parallel(tasks.compress) : () => {});
   gulp.task('validate', tasks.validate.length ? gulp.parallel(tasks.validate) : () => {});
   gulp.task('watch', tasks.watch.length ? gulp.parallel(tasks.watch) : () => {});
 
@@ -44,6 +50,7 @@ module.exports = (gulp, userConfig) => {
     'clean',
     gulp.parallel([
       'validate',
+      'compress',
       'compile'
     ]),
     'watch'
