@@ -1,8 +1,10 @@
 const babel      = require('gulp-babel');
 const concat     = require('gulp-concat');
 const del        = require('del');
+const error      = require('./core').error;
 const eslint     = require('gulp-eslint');
 const gulpif     = require('gulp-if');
+const plumber    = require('gulp-plumber');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify     = require('gulp-uglify');
 
@@ -13,6 +15,7 @@ module.exports = (gulp, config, tasks) => {
    */
   function jsCompile(done) {
     gulp.src(config.js.src)
+      .pipe(plumber({ errorHandler: error }))
       .pipe(sourcemaps.init())
       .pipe(gulpif(config.js.babel, babel()))
       .pipe(gulpif(config.js.uglify, uglify()))
@@ -42,6 +45,7 @@ module.exports = (gulp, config, tasks) => {
    */
   function jsValidate() {
     return gulp.src(config.js.src)
+      .pipe(plumber({ errorHandler: error }))
       .pipe(eslint())
       .pipe(eslint.format());
   }

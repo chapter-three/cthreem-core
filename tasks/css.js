@@ -54,6 +54,7 @@ module.exports = (gulp, config, tasks) => {
    */
   function cssValidate(done) {
     gulp.src(config.css.src)
+      .pipe(plumber({ errorHandler: error }))
       .pipe(stylelint({
         failAfterError: false,
         reporters: [{

@@ -1,11 +1,14 @@
 const del      = require('del');
+const error    = require('./core').error;
 const flatten  = require('gulp-flatten');
 const gulpif   = require('gulp-if');
 const imagemin = require('gulp-imagemin');
+const plumber  = require('gulp-plumber');
 
 module.exports = (gulp, config, tasks) => {
   function imageCompress(done) {
     return gulp.src(config.images.src)
+      .pipe(plumber({ errorHandler: error }))
       .pipe(imagemin([
         imagemin.gifsicle({ interlaced: true }),
         imagemin.jpegtran({ progressive: true }),
