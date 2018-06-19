@@ -38,11 +38,20 @@ module.exports = {
     dest: './assets/images',
     flattenDest: false
   },
+  icons: {
+    enabled: true,
+    src: [
+      'icons/**/*.svg'
+    ],
+    dest: './assets/images',
+    destName: 'icons.svg'
+  },
   browserSync: {
     enabled: true,
     files: {
       css: true,
       js: true,
+      icons: false,
       extra: []
     },
     baseDir: './',

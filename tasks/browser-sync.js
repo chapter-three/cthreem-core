@@ -9,6 +9,9 @@ module.exports = (gulp, config, tasks) => {
   if (config.browserSync.files.js) {
     files.push(config.js.dest + '/**/*.js');
   }
+  if (config.browserSync.files.icons) {
+    files.push(config.icons.dest + '/**/*.svg');
+  }
   if (config.browserSync.files.extra) {
     config.browserSync.files.extra.forEach((file) => {
       files.push(file);

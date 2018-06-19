@@ -20,6 +20,10 @@ module.exports = (gulp, userConfig) => {
    * These are in a specific order since some tasks need to be run prior to others.
    */
 
+  if (config.icons.enabled) {
+    require('./tasks/icons')(gulp, config, tasks);
+  }
+
   if (config.css.enabled) {
     require('./tasks/css')(gulp, config, tasks);
   }
