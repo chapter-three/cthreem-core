@@ -31,7 +31,7 @@ cp node_modules/cthreem-core/examples/.stylelintrc .stylelintrc
 
 ## Usage
 
-If you are running `Gulp` v4 globally, then you can just use gulp. 
+If you are running `Gulp` v4 globally, then you can just use gulp.
 
 ```bash
 gulp compile
@@ -67,7 +67,10 @@ Now you can use gulp through `npm run`:
 npm run start
 # -- or --
 npm run gulp
-# -- or --
-npm run gulp -- --tasks
 ```
 
+To see available tasks:
+
+```bash
+npm run gulp -- --tasks
+```
