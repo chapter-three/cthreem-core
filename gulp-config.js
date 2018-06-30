@@ -46,6 +46,12 @@ module.exports = {
     dest: './assets/images',
     destName: 'icons.svg'
   },
+  patternLab: {
+    enabled: true,
+    basePath: './pattern-lab',
+    watchedExtensions: ['twig', 'yml', 'yaml', 'json', 'md'],
+    scssToYml: []
+  },
   browserSync: {
     enabled: true,
     baseDir: './',

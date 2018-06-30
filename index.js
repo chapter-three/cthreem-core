@@ -41,6 +41,8 @@ module.exports = (gulp, userConfig) => {
     require('./tasks/images')(gulp, config, tasks, browserSync);
   }
 
+  if (config.patternLab.enabled) {
+    require('./tasks/pattern-lab')(gulp, config, tasks, browserSync);
   }
 
   /**
