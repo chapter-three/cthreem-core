@@ -41,6 +41,8 @@
     "gulp-svgstore": "^6.1.1",
     "gulp-uglify": "^3.0.0",
     "lodash": "^4.17.10",
+    "node-notifier": "^5.2.1",
+    "patternlab-scssvariables": "^1.1.1",
     "stylelint": "^9.2.1"
   },
   "devDependencies": {}
