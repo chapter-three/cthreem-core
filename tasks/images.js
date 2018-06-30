@@ -5,7 +5,8 @@ const gulpif   = require('gulp-if');
 const imagemin = require('gulp-imagemin');
 const plumber  = require('gulp-plumber');
 
-module.exports = (gulp, config, tasks) => {
+
+module.exports = (gulp, config, tasks, browserSync) => {
   function imageCompress(done) {
     return gulp.src(config.images.src)
       .pipe(plumber({ errorHandler: error }))
@@ -41,14 +42,25 @@ module.exports = (gulp, config, tasks) => {
   imageClean.description = 'Delete optimized image files.';
 
   /**
+   * Reload
+   */
+  function imageReload(done) {
+    if (browserSync) {
+      browserSync.reload();
+    }
+    done();
+  }
+  imageReload.description = 'Reload browsers.';
+
+  /**
    * Watch
    */
   function imageWatch() {
     const watchTasks = [imageCompress];
 
-    return gulp.watch(config.images.src, gulp.parallel(watchTasks));
+    return gulp.watch(config.images.src, gulp.series(gulp.parallel(watchTasks), imageReload));
   }
-  imageWatch.description = 'Watch image files for changes.'
+  imageWatch.description = 'Watch image files for changes.';
 
 
   /**

@@ -48,12 +48,6 @@ module.exports = {
   },
   browserSync: {
     enabled: true,
-    files: {
-      css: true,
-      js: true,
-      icons: false,
-      extra: []
-    },
     baseDir: './',
     startPath: '',
     domain: '',

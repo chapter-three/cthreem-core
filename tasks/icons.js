@@ -6,8 +6,7 @@ const svgmin   = require('gulp-svgmin');
 const svgstore = require('gulp-svgstore');
 
 
-
-module.exports = (gulp, config, tasks) => {
+module.exports = (gulp, config, tasks, browserSync) => {
   /**
    * Compile
    */
@@ -42,14 +41,25 @@ module.exports = (gulp, config, tasks) => {
   iconClean.description = 'Delete compiled icon files.';
 
   /**
+   * Reload
+   */
+  function iconReload(done) {
+    if (browserSync) {
+      browserSync.reload();
+    }
+    done();
+  }
+  iconReload.description = 'Reload browsers.';
+
+  /**
    * Watch
    */
   function iconWatch() {
     const watchTasks = [iconCompile];
 
-    return gulp.watch(config.icons.src, gulp.parallel(watchTasks));
+    return gulp.watch(config.icons.src, gulp.series(gulp.parallel(watchTasks), iconReload));
   }
-  iconWatch.description = 'Watch icon files for changes.'
+  iconWatch.description = 'Watch icon files for changes.';
 
 
   /**

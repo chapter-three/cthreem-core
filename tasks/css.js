@@ -11,7 +11,7 @@ const strip      = require('gulp-strip-comments');
 const stylelint  = require('gulp-stylelint');
 
 
-module.exports = (gulp, config, tasks) => {
+module.exports = (gulp, config, tasks, browserSync) => {
   /**
    * Compile
    */
@@ -65,7 +65,18 @@ module.exports = (gulp, config, tasks) => {
         done();
       });
   }
-  cssValidate.description = 'Validate (lint) scss for errors.'
+  cssValidate.description = 'Validate (lint) scss for errors.';
+
+  /**
+   * Reload
+   */
+  function cssReload(done) {
+    if (browserSync) {
+      browserSync.reload();
+    }
+    done();
+  }
+  cssReload.description = 'Reload browsers.';
 
   /**
    * Watch
@@ -77,9 +88,9 @@ module.exports = (gulp, config, tasks) => {
       watchTasks.push(cssValidate);
     }
 
-    return gulp.watch(config.css.src, gulp.parallel(watchTasks));
+    return gulp.watch(config.css.src, gulp.series(gulp.parallel(watchTasks), cssReload));
   }
-  cssWatch.description = 'Watch scss files for changes.'
+  cssWatch.description = 'Watch scss files for changes.';
 
 
   /**

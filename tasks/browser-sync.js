@@ -1,28 +1,10 @@
 const _           = require('lodash');
 const browserSync = require('browser-sync').create();
-const path        = require('path');
 
-module.exports = (gulp, config, tasks) => {
-  let files = [];
-  if (config.browserSync.files.css) {
-    files.push(path.join(config.css.dest, '/**/*.css'));
-  }
-  if (config.browserSync.files.js) {
-    files.push(path.join(config.js.dest, '/**/*.js'));
-  }
-  if (config.browserSync.files.icons) {
-    files.push(path.join(config.icons.dest, '/**/*.svg'));
-  }
-  if (config.browserSync.files.extra) {
-    config.browserSync.files.extra.forEach((file) => {
-      files.push(file);
-    });
-  }
-
+function init(config) {
   // See https://browsersync.io/docs/options
   const options = {
     ui: config.browserSync.ui,
-    files: files,
     notify: false,
     open: config.browserSync.startupBehavior,
     reloadOnRestart: true,
@@ -43,18 +25,11 @@ module.exports = (gulp, config, tasks) => {
     });
   }
 
-  function bsStart() {
-    browserSync.init(options);
-  }
-  bsStart.description = 'Watch files to reload browser when needed.';
+  browserSync.init(options);
 
+  return browserSync;
+}
 
-  /**
-   * Setup gulp tasks.
-   */
-
-  if (config.browserSync.enabled) {
-    gulp.task('watch:bs', bsStart);
-    tasks.watch.push('watch:bs');
-  }
+module.exports = (config) => {
+  return init(config);
 }

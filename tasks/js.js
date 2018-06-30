@@ -9,7 +9,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const uglify     = require('gulp-uglify');
 
 
-module.exports = (gulp, config, tasks) => {
+module.exports = (gulp, config, tasks, browserSync) => {
   /**
    * Compile
    */
@@ -49,7 +49,18 @@ module.exports = (gulp, config, tasks) => {
       .pipe(eslint())
       .pipe(eslint.format());
   }
-  jsValidate.description = 'Validate (lint) javascript for errors.'
+  jsValidate.description = 'Validate (lint) javascript for errors.';
+
+  /**
+   * Reload
+   */
+  function jsReload(done) {
+    if (browserSync) {
+      browserSync.reload();
+    }
+    done();
+  }
+  jsReload.description = 'Reload browsers.';
 
   /**
    * Watch
@@ -61,9 +72,9 @@ module.exports = (gulp, config, tasks) => {
       watchTasks.push(jsValidate);
     }
 
-    return gulp.watch(config.js.src, gulp.parallel(watchTasks));
+    return gulp.watch(config.js.src, gulp.series(gulp.parallel(watchTasks, jsReload)));
   }
-  jsWatch.description = 'Watch javascript files for changes.'
+  jsWatch.description = 'Watch javascript files for changes.';
 
 
   /**

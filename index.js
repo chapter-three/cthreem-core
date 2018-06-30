@@ -20,24 +20,27 @@ module.exports = (gulp, userConfig) => {
    * These are in a specific order since some tasks need to be run prior to others.
    */
 
+  let browserSync = null;
+  if (config.browserSync.enabled) {
+    browserSync = require('./tasks/browser-sync')(config);
+  }
+
   if (config.icons.enabled) {
-    require('./tasks/icons')(gulp, config, tasks);
+    require('./tasks/icons')(gulp, config, tasks, browserSync);
   }
 
   if (config.css.enabled) {
-    require('./tasks/css')(gulp, config, tasks);
+    require('./tasks/css')(gulp, config, tasks, browserSync);
   }
 
   if (config.js.enabled) {
-    require('./tasks/js')(gulp, config, tasks);
+    require('./tasks/js')(gulp, config, tasks, browserSync);
   }
 
   if (config.images.enabled) {
-    require('./tasks/images')(gulp, config, tasks);
+    require('./tasks/images')(gulp, config, tasks, browserSync);
   }
 
-  if (config.browserSync.enabled) {
-    require('./tasks/browser-sync')(gulp, config, tasks);
   }
 
   /**
