@@ -5,66 +5,66 @@ const rename   = require('gulp-rename');
 const svgmin   = require('gulp-svgmin');
 const svgstore = require('gulp-svgstore');
 
+let gulp = null;
+let config = {};
+let tasks = [];
+let browserSync = null;
 
-module.exports = (gulp, config, tasks, browserSync) => {
-  /**
-   * Compile
-   */
-  function iconCompile(done) {
-    gulp.src(config.icons.src)
-      .pipe(plumber({ errorHandler: error }))
-      .pipe(svgmin())
-      .pipe(rename({ prefix: 'icon-' }))
-      .pipe(svgstore({ inlineSvg: true }))
-      .pipe(rename(config.icons.destName))
-      .pipe(rename(function (path) {
-        path.dirname = '';
-        return path;
-      }))
-      .pipe(gulp.dest(config.icons.dest))
-      .on('end', () => {
-        done();
-      });
+/**
+ * Compile
+ */
+function iconCompile() {
+  return gulp.src(config.src)
+    .pipe(plumber({ errorHandler: error }))
+    .pipe(svgmin())
+    .pipe(rename({ prefix: 'icon-' }))
+    .pipe(svgstore({ inlineSvg: true }))
+    .pipe(rename(config.destName))
+    .pipe(rename(function (path) {
+      path.dirname = '';
+      return path;
+    }))
+    .pipe(gulp.dest(config.dest));
+}
+iconCompile.description = 'Compile svg icons into an SVG sprite.';
+
+/**
+ * Clean
+ */
+function iconClean() {
+  return del([
+    config.dest
+  ], { force: true });
+}
+iconClean.description = 'Delete compiled icon files.';
+
+/**
+ * Reload
+ */
+function iconReload(done) {
+  if (browserSync) {
+    browserSync.reload();
   }
-  iconCompile.description = 'Compile svg icons into an SVG sprite.';
+  done();
+}
+iconReload.description = 'Reload browsers.';
 
-  /**
-   * Clean
-   */
-  function iconClean(done) {
-    del([
-      config.icons.dest
-    ], { force: true }).then(() => {
-      done();
-    });
-  }
-  iconClean.description = 'Delete compiled icon files.';
+/**
+ * Watch
+ */
+function iconWatch() {
+  const watchTasks = [iconCompile];
 
-  /**
-   * Reload
-   */
-  function iconReload(done) {
-    if (browserSync) {
-      browserSync.reload();
-    }
-    done();
-  }
-  iconReload.description = 'Reload browsers.';
-
-  /**
-   * Watch
-   */
-  function iconWatch() {
-    const watchTasks = [iconCompile];
-
-    return gulp.watch(config.icons.src, gulp.series(gulp.parallel(watchTasks), iconReload));
-  }
-  iconWatch.description = 'Watch icon files for changes.';
+  return gulp.watch(config.src, gulp.series(gulp.parallel(watchTasks), iconReload));
+}
+iconWatch.description = 'Watch icon files for changes.';
 
 
-  /**
-   * Setup gulp tasks.
-   */
+module.exports = (options) => {
+  gulp = options.gulp;
+  config = options.config;
+  tasks = options.tasks;
+  browserSync = options.browserSync;
 
   gulp.task('compile:icon', iconCompile);
   tasks.compile.push('compile:icon');

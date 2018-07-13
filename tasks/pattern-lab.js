@@ -3,88 +3,95 @@ const path     = require('path');
 const sh        = require('./core').sh;
 const scssvars = require('patternlab-scssvariables');
 
+let gulp = null;
+let config = {};
+let tasks = [];
+let browserSync = null;
 
-module.exports = (gulp, config, tasks, browserSync) => {
-  const consolePath = path.join(config.patternLab.basePath, 'core/console');
-  const publicPath = path.join(config.patternLab.basePath, 'public');
-  const sourcePath = path.join(config.patternLab.basePath, 'source');
+let consolePath = '';
+let publicPath = '';
+let sourcePath = '';
 
 
-  /**
-   * Generate
-   */
-  function plGenerate(done) {
-    sh(`php ${consolePath} --generate`, done);
-  }
-  plGenerate.description = 'Generate/build Pattern Lab.';
+/**
+ * Generate
+ */
+function plGenerate(done) {
+  sh(`php ${consolePath} --generate`, done);
+}
+plGenerate.description = 'Generate/build Pattern Lab.';
 
-  /**
-   * SCSS to YAML
-   */
-  function plScssToYml(done) {
-    config.patternLab.scssToYml.forEach(({ scss, yml, text }) => {
-      scssvars({
-        src: scss,
-        dest: yml,
-        description: `To add to these items, edit the file at <code>${scss}</code>`
-      });
+/**
+ * SCSS to YAML
+ */
+function plScssToYml(done) {
+  config.scssToYml.forEach(({ scss, yml, text }) => {
+    scssvars({
+      src: scss,
+      dest: yml,
+      description: `To add to these items, edit the file at <code>${scss}</code>`
     });
-    done();
+  });
+  done();
+}
+plScssToYml.description = 'Generate yml files from scss variables.';
+
+/**
+ * Clean
+ */
+function plClean() {
+  return del([
+    publicPath
+  ], { force: true });
+}
+plClean.description = 'Delete compiled Pattern Lab files.';
+
+/**
+ * Reload
+ */
+function plReload(done) {
+  if (browserSync) {
+    browserSync.reload();
   }
-  plScssToYml.description = 'Generate yml files from scss variables.';
+  done();
+}
+plReload.description = 'Reload browsers.';
 
-  /**
-   * Clean
-   */
-  function plClean(done) {
-    del([
-      publicPath
-    ], { force: true }).then(() => {
-      done();
-    });
-  }
-  plClean.description = 'Delete compiled Pattern Lab files.';
+/**
+ * Watch scss to yml
+ */
+function plScssToYmlWatch() {
+  const watchTasks = [plScssToYml];
+  const plSrc = [];
+  config.scssToYml.forEach(({ scss, yml }) => {
+    plSrc.push(scss);
+  });
 
-  /**
-   * Reload
-   */
-  function plReload(done) {
-    if (browserSync) {
-      browserSync.reload();
-    }
-    done();
-  }
-  plReload.description = 'Reload browsers.';
+  return gulp.watch(plSrc, gulp.series(watchTasks, plReload));
+}
+plScssToYmlWatch.description = 'Watch Pattern Lab files for changes.';
 
-  /**
-   * Watch scss to yml
-   */
-  function plScssToYmlWatch() {
-    const watchTasks = [plScssToYml];
-    const plSrc = [];
-    config.patternLab.scssToYml.forEach(({ scss, yml }) => {
-      plSrc.push(scss);
-    });
+/**
+ * Watch generate
+ */
+function plGenerateWatch() {
+  const watchTasks = [plGenerate];
+  const plSrc = path.join(sourcePath, `**/*.{${config.watchedExtensions}}`);
 
-    return gulp.watch(plSrc, gulp.series(watchTasks, plReload));
-  }
-  plScssToYmlWatch.description = 'Watch Pattern Lab files for changes.';
-
-  /**
-   * Watch generate
-   */
-  function plGenerateWatch() {
-    const watchTasks = [plGenerate];
-    const plSrc = path.join(sourcePath, `**/*.{${config.patternLab.watchedExtensions}}`);
-
-    return gulp.watch(plSrc, gulp.series(gulp.parallel(watchTasks), plReload));
-  }
-  plGenerateWatch.description = 'Watch Pattern Lab files for changes.';
+  return gulp.watch(plSrc, gulp.series(gulp.parallel(watchTasks), plReload));
+}
+plGenerateWatch.description = 'Watch Pattern Lab files for changes.';
 
 
-  /**
-   * Setup gulp tasks.
-   */
+module.exports = (options) => {
+  gulp = options.gulp;
+  config = options.config;
+  tasks = options.tasks;
+  browserSync = options.browserSync;
+
+  consolePath = path.join(config.basePath, 'core/console');
+  publicPath = path.join(config.basePath, 'public');
+  sourcePath = path.join(config.basePath, 'source');
 
   gulp.task('compile:pl:scsstoyml', plScssToYml);
   tasks.compile.push('compile:pl:scsstoyml');
