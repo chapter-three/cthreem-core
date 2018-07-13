@@ -8,78 +8,78 @@ const plumber    = require('gulp-plumber');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify     = require('gulp-uglify');
 
+let gulp = null;
+let config = {};
+let tasks = [];
+let browserSync = null;
 
-module.exports = (gulp, config, tasks, browserSync) => {
-  /**
-   * Compile
-   */
-  function jsCompile(done) {
-    gulp.src(config.js.src)
-      .pipe(plumber({ errorHandler: error }))
-      .pipe(sourcemaps.init())
-      .pipe(gulpif(config.js.babel, babel()))
-      .pipe(gulpif(config.js.uglify, uglify()))
-      .pipe(gulpif(config.js.concat.enabled, concat(config.js.concat.dest)))
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest(config.js.dest))
-      .on('end', () => {
-        done();
-      });
+/**
+ * Compile
+ */
+function jsCompile() {
+  return gulp.src(config.src)
+    .pipe(plumber({ errorHandler: error }))
+    .pipe(sourcemaps.init())
+    .pipe(gulpif(config.babel, babel()))
+    .pipe(gulpif(config.uglify, uglify()))
+    .pipe(gulpif(config.concat.enabled, concat(config.concat.dest)))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest(config.dest));
+}
+jsCompile.description = 'Compile, transpile, and uglify javascript.';
+
+/**
+ * Clean
+ */
+function jsClean() {
+  return del([
+    config.dest
+  ], { force: true });
+}
+jsClean.description = 'Delete compiled javascript files.';
+
+/**
+ * Validate
+ */
+function jsValidate() {
+  return gulp.src(config.src)
+    .pipe(plumber({ errorHandler: error }))
+    .pipe(eslint())
+    .pipe(eslint.format());
+}
+jsValidate.description = 'Validate (lint) javascript for errors.';
+
+/**
+ * Reload
+ */
+function jsReload(done) {
+  if (browserSync) {
+    browserSync.reload();
   }
-  jsCompile.description = 'Compile, transpile, and uglify javascript.';
+  done();
+}
+jsReload.description = 'Reload browsers.';
 
-  /**
-   * Clean
-   */
-  function jsClean(done) {
-    del([
-      config.js.dest
-    ], { force: true }).then(() => {
-      done();
-    });
+/**
+ * Watch
+ */
+function jsWatch() {
+  const watchTasks = [jsCompile];
+
+  if (config.lint) {
+    watchTasks.push(jsValidate);
   }
-  jsClean.description = 'Delete compiled javascript files.';
 
-  /**
-   * Validate
-   */
-  function jsValidate() {
-    return gulp.src(config.js.src)
-      .pipe(plumber({ errorHandler: error }))
-      .pipe(eslint())
-      .pipe(eslint.format());
-  }
-  jsValidate.description = 'Validate (lint) javascript for errors.';
-
-  /**
-   * Reload
-   */
-  function jsReload(done) {
-    if (browserSync) {
-      browserSync.reload();
-    }
-    done();
-  }
-  jsReload.description = 'Reload browsers.';
-
-  /**
-   * Watch
-   */
-  function jsWatch() {
-    const watchTasks = [jsCompile];
-
-    if (config.js.lint) {
-      watchTasks.push(jsValidate);
-    }
-
-    return gulp.watch(config.js.src, gulp.series(gulp.parallel(watchTasks, jsReload)));
-  }
-  jsWatch.description = 'Watch javascript files for changes.';
+  return gulp.watch(config.src, gulp.series(gulp.parallel(watchTasks, jsReload)));
+}
+jsWatch.description = 'Watch javascript files for changes.';
 
 
-  /**
-   * Setup gulp tasks.
-   */
+module.exports = (options) => {
+  gulp = options.gulp;
+  config = options.config;
+  tasks = options.tasks;
+  browserSync = options.browserSync;
 
   gulp.task('compile:js', jsCompile);
   tasks.compile.push('compile:js');
@@ -87,7 +87,7 @@ module.exports = (gulp, config, tasks, browserSync) => {
   gulp.task('clean:js', jsClean);
   tasks.clean.push('clean:js');
 
-  if (config.js.lint) {
+  if (config.lint) {
     gulp.task('validate:js', jsValidate);
     tasks.validate.push('validate:js');
   }

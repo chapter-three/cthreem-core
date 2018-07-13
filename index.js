@@ -15,35 +15,31 @@ module.exports = (gulp, userConfig) => {
     watch: [],
   };
 
-  /**
-   * Add individual task items to each "tasks" set.
-   * These are in a specific order since some tasks need to be run prior to others.
-   */
-
   let browserSync = null;
   if (config.browserSync.enabled) {
     browserSync = require('./tasks/browser-sync')(config);
   }
 
-  if (config.icons.enabled) {
-    require('./tasks/icons')(gulp, config, tasks, browserSync);
-  }
+  Object.keys(config.tasks).forEach((task) => {
+    if (!config.tasks[task].enabled) {
+      return;
+    }
 
-  if (config.css.enabled) {
-    require('./tasks/css')(gulp, config, tasks, browserSync);
-  }
+    const options = {
+      gulp: gulp,
+      config: config.tasks[task],
+      tasks: tasks,
+      browserSync: browserSync
+    }
 
-  if (config.js.enabled) {
-    require('./tasks/js')(gulp, config, tasks, browserSync);
-  }
+    if (config.tasks[task].type == 'plugin') {
+      require(`../${config.tasks[task].name}`)(options);
+    }
+    else {
+      require(`./tasks/${task}.js`)(options);
+    }
+  });
 
-  if (config.images.enabled) {
-    require('./tasks/images')(gulp, config, tasks, browserSync);
-  }
-
-  if (config.patternLab.enabled) {
-    require('./tasks/pattern-lab')(gulp, config, tasks, browserSync);
-  }
 
   /**
    * Gulp tasks.
