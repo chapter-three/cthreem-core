@@ -22,7 +22,8 @@
         "at-root",
         "return",
         "warn",
-        "debug"
+        "debug",
+        "else"
       ]
     }],
     "at-rule-semicolon-newline-after": "always",
