@@ -27,8 +27,8 @@ plGenerate.description = 'Generate/build Pattern Lab.';
 function plScssToYml(done) {
   config.scssToYml.forEach(({ scss, yml, text }) => {
     scssvars({
-      src: scss,
-      dest: yml,
+      src: path.join(sourcePath, scss),
+      dest: path.join(sourcePath, yml),
       description: `To add to these items, edit the file at <code>${scss}</code>`
     });
   });
