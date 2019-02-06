@@ -27,9 +27,7 @@ function cssCompile() {
       outputStyle: config.outputStyle,
       includePaths: config.includePaths
     }))
-    .pipe(prefix({
-      browsers: config.autoPrefixerBrowsers
-    }))
+    .pipe(prefix(config.autoPrefixer))
     .pipe(gulpif(config.removeSourceComments, strip.text()))
     .pipe(sourcemaps.write('./'))
     .pipe(gulpif(config.flattenDest, flatten()))
